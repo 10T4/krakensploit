@@ -37,7 +37,7 @@ def run_script(**args):
     ip_address = args["ip_address"]
 
     if 'prefix' in args:
-        prefix = args['prefix']
+        prefix = int(args['prefix'])
     else:
         prefix = 32
 
@@ -50,7 +50,7 @@ def run_script(**args):
         raise ValueError("Invalid IP address")
 
     sc = PortScanner()
-    result = sc.scan(ip_address +'/'+str(prefix), arguments="-Pn -sV -O" + (" --script=vuln" if scan_vuln else ""))
+    result = sc.scan(ip_address +'/'+str(prefix), arguments="-p- -Pn -sV -O" + (" --script=vuln" if scan_vuln else ""))
     return result
 
 def help():

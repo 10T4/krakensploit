@@ -38,7 +38,7 @@ class URLBruteforcer():
             disable_https_warnings()
         self.word_dictionary = word_dictionary
         self.status_code = status_code
-        self.nb_thread = nb_thread
+        self.nb_thread = int(nb_thread)
         self.request_pool = ThreadPool(self.nb_thread)
         
         # make x number of session to avoid blocking number of threads
