@@ -40,6 +40,9 @@ class URLBruteforcer():
         self.status_code = status_code
         self.nb_thread = nb_thread
         self.request_pool = ThreadPool(self.nb_thread)
+        
+        # make x number of session to avoid blocking number of threads
+        self.session_pool = [requests.Session() for _ in range(self.nb_thread)]
 
         if proxy == self.PROXY_DEFAULT_DICT:
             self.proxy = proxy
@@ -98,8 +101,10 @@ class URLBruteforcer():
                 if dir_to_test is not None and dir_to_test != url]
 
     def _request_thread(self, complete_url: str) -> list:
+        import threading
+        thread = int(threading.current_thread().name.split('-')[-1].split(' ')[0]) % self.nb_thread
         try:
-            response = requests.get(complete_url, proxies=self.proxy, verify=False)
+            response = self.session_pool[thread].get(complete_url, proxies=self.proxy, verify=False)
         except Exception as e:
             self.logger.error(str(e) + '. URL: {}'.format(complete_url), exc_info=True)
             return []

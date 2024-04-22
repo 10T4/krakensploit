@@ -1,11 +1,6 @@
 import argparse
 import os
-from scripts import netdiscovery, dirbbuster
-
-scripts = {
-    "nmap": netdiscovery,
-    "dirb": dirbbuster
-}
+from addons.scriptManager import scripts
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Kraken CLI')
