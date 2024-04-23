@@ -1,0 +1,10 @@
+[
+    {
+        "url": "http://172.20.10.4/robots.txt",
+        "status": 200
+    },
+    {
+        "url": "http://172.20.10.4/.htpasswds",
+        "status": 403
+    }
+]

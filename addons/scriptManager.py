@@ -1,6 +1,7 @@
-from scripts import netdiscovery, dirbbuster
+from scripts import netdiscovery, dirbbuster, credfinder
 
 scripts = {
     "nmap": netdiscovery,
-    "dirb": dirbbuster
+    "dirb": dirbbuster,
+    "credential": credfinder
 }
