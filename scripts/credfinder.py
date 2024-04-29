@@ -117,6 +117,13 @@ def help():
         }
     }
 
+def gui_inputs():
+    return [
+        {"label": "URLs", "id": "urls", "type": "text"},
+        {"label": "Wordlist", "id": "dictionnary", "type": "file"},
+        {"label": "Use output from DIRB (enable this option will disable the URLs option)", "id": "input_file", "type": "output", "from": "dirb"}
+    ]
+
 def display_result(result):
     print("Results:")
     for res in result:

@@ -1,44 +1,27 @@
 import dearpygui.dearpygui as dpg
-from addons.guiRunner import GuiRunner, get_dpg_values
-
-
-dpg.create_context()
+from addons.guiRunner import GuiRunner
 
 runner = GuiRunner(dpg)
+
+dpg.create_context()
 
 with dpg.window(tag="MAIN"):
 
     with dpg.collapsing_header(label="Runner"):
+        dpg.add_tab_bar(tag="inputs")
+        with dpg.value_registry():
+            runner.setup_inputs()
+
         with dpg.group(horizontal=True):
-            dpg.add_text("Target:")
-            dpg.add_input_text(width=200, source="ip_address")
-            dpg.add_text("/")
-            dpg.add_input_text(width=22, source="prefix", default_value="32")
-
-        with dpg.tree_node(label="NMap"):
-            with dpg.group(horizontal=True):
-                dpg.add_checkbox(source="nmap_network_services_scan", default_value=True)
-                dpg.add_text("Run NMAP Scan")
-
-            with dpg.group(horizontal=True):
-                dpg.add_checkbox(source="scan_vuln", default_value=True)
-                dpg.add_text("Vulnerability Scan")
-
-
-        dpg.add_button(label="Run", callback=lambda: [runner.run(get_dpg_values(dpg)), runner.display_results()])
+            dpg.add_button(label="Run", callback=lambda: [runner.run(runner.get_dpg_values()), runner.display_results()])
+            dpg.add_text(source="spinner", default_value="")
+            dpg.add_button(tag="download-button", label="Download JSON", callback=lambda: runner.save_results(), show=False)
 
     with dpg.collapsing_header(label="Logger"):
-        dpg.add_text(source="logger", default_value="Logger: Nothing to log")
+        dpg.add_text(source="logger", default_value="Logger: Nothing to log", wrap=600)
 
     with dpg.collapsing_header(label="Output"):
-        with dpg.tree_node(label="NMap"):
-            with dpg.tab_bar():
-                with dpg.tab(label="Network & Services Scan"):
-                    dpg.add_text("Network & Services Scan Results")
-                with dpg.tab(label="OS Detection"):
-                    dpg.add_text("OS Detection Results")
-                with dpg.tab(label="Vulnerability Scan"):
-                    dpg.add_text("Vulnerability Scan Results")
+        dpg.add_tab_bar(tag="tabs")
 
     with dpg.collapsing_header(label="Settings"):
         dpg.add_text("Settings")

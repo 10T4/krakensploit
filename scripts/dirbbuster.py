@@ -22,7 +22,7 @@ def run_script(**args):
     else:
         threads = 10
 
-    if "status_code" in args:
+    if "status_code" in args and args["status_code"] != "":
         status_code = map(int, args["status_code"].replace(" ", "").split(","))
         status_code = list(status_code)
     else:
@@ -88,6 +88,20 @@ def display_result(result):
     print("Results:")
     for res in result:
         print("URL: " + res["url"] + "\t Status code: " + str(res["status"]))
+
+def gui_inputs():
+    return [
+        {"label": "URL", "id": "url", "type": "text"},
+        {"label": "Wordlist", "id": "dictionnary", "type": "file"},
+        {"label": "Threads", "id": "threads", "type": "number"},
+        {"label": "Status code", "id": "status_code", "type": "text"}
+    ]
+
+def format_to_table(res):
+    return {
+        "headers": ["URL", "Status code"],
+        "rows": [[r["url"], r["status"]] for r in res]
+    }
 
 def additional_functions():
     return {

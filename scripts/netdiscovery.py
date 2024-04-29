@@ -1,6 +1,8 @@
 import netifaces
 import re
 from nmap import PortScanner
+import json
+import addons.utils as utils
 
 #########
 ## Utils functions
@@ -41,16 +43,26 @@ def run_script(**args):
     else:
         prefix = 32
 
-    if 'scan_vuln' in args:
-        scan_vuln = args['scan_vuln']
+    if 'scan_vuln' in args and args['scan_vuln']:
+        scan_vuln = True
     else:
         scan_vuln = False
+
+    if 'all_ports' in args and args['all_ports']:
+        all_ports = True
+    else:
+        all_ports = False
+
+    if 'update_db' in args and args['update_db']:
+        update_db = True
+    else:
+        update_db = False
 
     if not validate_ip(ip_address):
         raise ValueError("Invalid IP address")
 
     sc = PortScanner()
-    result = sc.scan(ip_address +'/'+str(prefix), arguments="-p- -Pn -sV -O" + (" --script=vuln" if scan_vuln else ""))
+    result = sc.scan(ip_address +'/'+str(prefix), arguments=("-p- " if all_ports else "") + "-Pn -sV -O" + (" --script=vuln" if scan_vuln else "") + (" --script-updatedb" if update_db else ""))
     return result
 
 def help():
@@ -69,6 +81,16 @@ def help():
             },
             "scan_vuln": {
                 "description": "Scan for vulnerabilities",
+                "required": False,
+                "type": "boolean"
+            },
+            "all_ports": {
+                "description": "Scan all ports",
+                "required": False,
+                "type": "boolean"
+            },
+            "update_db": {
+                "description": "Update the script database (requires root/admin privileges)",
                 "required": False,
                 "type": "boolean"
             }
@@ -107,6 +129,29 @@ def display_result(result: dict):
                     print('Vulnerabilities found : %s' % ', '.join(vulns))
                 else:
                     print('No vulnerabilities found')
+
+def format_to_table(res):
+    return {
+        "headers": ["IP Address", "Hostname", "OS", "Ports", "Vulnerabilities"],
+        "rows": [
+            [
+                h,
+                res['scan'][h]['hostnames'][0]['name'] if 'hostnames' in res['scan'][h] else 'N/A',
+                ', '.join([match['name'] for match in res['scan'][h]['osmatch']]) if 'osmatch' in res['scan'][h] else 'N/A',
+                '\n'.join(map(lambda e: str(e) + ": " + (res['scan'][h]['tcp'][e]['name'] or "unknown"), [p for p in res['scan'][h]['tcp'].keys()])) if 'tcp' in res['scan'][h] else 'N/A',
+                ", ".join(set(', '.join(json.dumps(cve) for cve in filter((lambda x: x.__len__() > 0), (re.findall(r'CVE-\d{4}-\d{4}', json.dumps(res['scan'][h]['tcp'][p]['script'] if "script" in res['scan'][h]['tcp'][p] else [])) for p in res['scan'][h]['tcp']))).replace('"', '').replace('[', '').replace(']', '').split(", ")))
+            ] for h in res['scan']
+        ]
+    }
+
+def gui_inputs():
+    return [
+        {"label": "IP Address", "id": "ip_address", "type": "text"},
+        {"label": "CIDR", "id": "prefix", "type": "number"},
+        {"label": "Scan Vulnerabilities", "id": "scan_vuln", "type": "checkbox"},
+        {"label": "Scan All Ports", "id": "all_ports", "type": "checkbox"},
+        {"label": "Update Script Database (requires root/admin privileges)", "id": "update_db", "type": "checkbox"}
+    ]
 
 def additional_functions():
     return {
