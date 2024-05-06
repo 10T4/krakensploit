@@ -5,3 +5,5 @@ lib
 lib64
 pyvenv.cfg
 **/__pycache__
+results.json
+settings.json

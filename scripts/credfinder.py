@@ -16,11 +16,11 @@ def run_script(**args):
     if not all(arg in args for arg in needed_args):
         raise ValueError("Missing arguments")
     
-    if "urls" in args:
+    if "urls" in args and not "input_file" in args:
         urls = args["urls"].split(",")
     elif "input_file" in args:
         # Lire le contenu du fichier
-        with open('dirb.json', 'r') as file:
+        with open(args["input_file"], 'r') as file:
             urls = []
             for ed in json.load(file):
                 urls.append(ed["url"])
@@ -131,6 +131,12 @@ def display_result(result):
         if res["exists"] == True:
             for l in res["content"]:
                 print("\t" + l)
+
+def format_to_table(res):
+    return {
+        "headers": ["URL", "Exists", "Content"],
+        "rows": [[r["url"], str(r["exists"]), "\n".join(list(set(map(lambda e: ("> " + e) if e.__len__() < 100 else "> Redacted: Too long (export to see it)", r["content"]) if "content" in r else [])))] for r in res]
+    }
 
 def additional_functions():
     return {

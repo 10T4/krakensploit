@@ -139,7 +139,7 @@ def format_to_table(res):
                 res['scan'][h]['hostnames'][0]['name'] if 'hostnames' in res['scan'][h] else 'N/A',
                 ', '.join([match['name'] for match in res['scan'][h]['osmatch']]) if 'osmatch' in res['scan'][h] else 'N/A',
                 '\n'.join(map(lambda e: str(e) + ": " + (res['scan'][h]['tcp'][e]['name'] or "unknown"), [p for p in res['scan'][h]['tcp'].keys()])) if 'tcp' in res['scan'][h] else 'N/A',
-                ", ".join(set(', '.join(json.dumps(cve) for cve in filter((lambda x: x.__len__() > 0), (re.findall(r'CVE-\d{4}-\d{4}', json.dumps(res['scan'][h]['tcp'][p]['script'] if "script" in res['scan'][h]['tcp'][p] else [])) for p in res['scan'][h]['tcp']))).replace('"', '').replace('[', '').replace(']', '').split(", ")))
+                ", ".join(set(', '.join(json.dumps(cve) for cve in filter((lambda x: x.__len__() > 0), (re.findall(r'CVE-\d{4}-\d{4}', json.dumps(res['scan'][h]['tcp'][p]['script'] if "script" in res['scan'][h]['tcp'][p] else [])) for p in res['scan'][h]['tcp'] if "tcp" in res['scan'][h]))).replace('"', '').replace('[', '').replace(']', '').split(", "))) if 'tcp' in res['scan'][h] else 'N/A'
             ] for h in res['scan']
         ]
     }

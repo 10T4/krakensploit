@@ -4,6 +4,7 @@ from threading import Event
 import threading
 import time
 import json
+from tempfile import NamedTemporaryFile
 
 class GuiRunner:
 
@@ -30,20 +31,35 @@ class GuiRunner:
         self.dpg.hide_item("download-button")
 
         for script in self.scripts:
-            self.script_results.append({
-                "script": script.replace("s_", ""),
-                "result": self.run_script(script.replace("s_", ""), **options)
-            })
+            try:
+                self.script_results.append({
+                    "script": script.replace("s_", ""),
+                    "result": self.run_script(script.replace("s_", ""), **options)
+                })
+            except Exception as e:
+                if self.dpg.does_item_exist("error"):
+                    self.dpg.delete_item("error")
 
-            self.event.set()
+                with self.dpg.window(tag="error", label="Error", width=300, height=300, no_collapse=True, no_move=True, no_resize=True, no_scrollbar=True, no_saved_settings=True, show=True):
+                    self.dpg.add_text(str(e), wrap=300)
+                
+                self.event.set()
+                self.dpg.set_value("logger", self.dpg.get_value("logger") + "\n\n" + str(e) + "\n\n")
+                self.script_results = []
+                
+                return
+
+        self.event.set()
 
         print("Scripts run")
 
     def spin(self):
         spinner_symbols = ["|", "/", "-", "\\"]
         while not self.event.is_set():
+            currentScript = self.scripts[self.script_results.__len__()].replace("s_", "")
+
             for i in spinner_symbols:
-                self.dpg.set_value("spinner", "Running" + " " + i)
+                self.dpg.set_value("spinner", "Running" + (" (" + currentScript + ")" if currentScript is not None else "") + " " + i)
                 time.sleep(0.15)
         self.dpg.set_value("spinner", "")
 
@@ -61,6 +77,19 @@ class GuiRunner:
         for arg in args:
             if arg.startswith(scriptName):
                 scriptArgs[arg.replace(scriptName + "_", "")] = args[arg]
+
+            guiInput = script.gui_inputs()
+            for input in guiInput:
+                if input["type"] == "output" and input["id"] == arg.replace(scriptName + "_", "") and args[arg] == True:
+                    for otherResult in self.script_results:
+                        if input["from"] == otherResult["script"]:
+                            f = NamedTemporaryFile(mode="w+", delete=False)
+                            f.write(json.dumps(otherResult["result"], indent=4))
+                            f.seek(0)
+                            f.close()
+                            print(arg + " " + f.name)
+                            scriptArgs[arg.replace(scriptName + "_", "")] = f.name
+            
 
         #return {'nmap': {'command_line': 'nmap -oX - -p- -Pn -sV -O --script=vuln 192.168.110.1/32', 'scaninfo': {'tcp': {'method': 'syn', 'services': '1-65535'}}, 'scanstats': {'timestr': 'Tue Apr 23 11:19:25 2024', 'elapsed': '229.90', 'uphosts': '1', 'downhosts': '0', 'totalhosts': '1'}}, 'scan': {'192.168.110.1': {'hostnames': [{'name': '', 'type': ''}], 'addresses': {'ipv4': '192.168.110.1'}, 'vendor': {}, 'status': {'state': 'up', 'reason': 'user-set'}, 'uptime': {'seconds': '584333', 'lastboot': 'Tue Apr 16 17:00:32 2024'}, 'tcp': {135: {'state': 'open', 'reason': 'syn-ack', 'name': 'msrpc', 'product': 'Microsoft Windows RPC', 'version': '', 'extrainfo': '', 'conf': '10', 'cpe': 'cpe:/o:microsoft:windows'}, 137: {'state': 'filtered', 'reason': 'no-response', 'name': 'netbios-ns', 'product': '', 'version': '', 'extrainfo': '', 'conf': '3', 'cpe': ''}, 139: {'state': 'open', 'reason': 'syn-ack', 'name': 'netbios-ssn', 'product': 'Microsoft Windows netbios-ssn', 'version': '', 'extrainfo': '', 'conf': '10', 'cpe': 'cpe:/o:microsoft:windows'}, 445: {'state': 'open', 'reason': 'syn-ack', 'name': 'microsoft-ds', 'product': '', 'version': '', 'extrainfo': '', 'conf': '3', 'cpe': ''}, 903: {'state': 'open', 'reason': 'syn-ack', 'name': 'vmware-auth', 'product': 'VMware Authentication Daemon', 'version': '1.10', 'extrainfo': 'Uses VNC, SOAP', 'conf': '10', 'cpe': '', 'script': {'ssl-ccs-injection': 'No reply from server (TIMEOUT)'}}, 913: {'state': 'open', 'reason': 'syn-ack', 'name': 'vmware-auth', 'product': 'VMware Authentication Daemon', 'version': '1.0', 'extrainfo': 'Uses VNC, SOAP', 'conf': '10', 'cpe': ''}, 3306: {'state': 'open', 'reason': 'syn-ack', 'name': 'mysql', 'product': 'MySQL', 'version': '8.2.0', 'extrainfo': '', 'conf': '10', 'cpe': 'cpe:/a:mysql:mysql:8.2.0', 'script': {'mysql-vuln-cve2012-2122': 'ERROR: Script execution failed (use -d to debug)', 'vulners': '\n  cpe:/a:mysql:mysql:8.2.0: \n    \tPRION:CVE-2024-20969\t4.7\thttps://vulners.com/prion/PRION:CVE-2024-20969\n    \tPRION:CVE-2024-20967\t4.7\thttps://vulners.com/prion/PRION:CVE-2024-20967\n    \tPRION:CVE-2024-20985\t4.0\thttps://vulners.com/prion/PRION:CVE-2024-20985\n    \tPRION:CVE-2024-20977\t4.0\thttps://vulners.com/prion/PRION:CVE-2024-20977\n    \tPRION:CVE-2024-20975\t4.0\thttps://vulners.com/prion/PRION:CVE-2024-20975\n    \tPRION:CVE-2024-20973\t4.0\thttps://vulners.com/prion/PRION:CVE-2024-20973\n    \tPRION:CVE-2024-20963\t4.0\thttps://vulners.com/prion/PRION:CVE-2024-20963\n    \tPRION:CVE-2024-20961\t4.0\thttps://vulners.com/prion/PRION:CVE-2024-20961\n    \tPRION:CVE-2024-20981\t3.3\thttps://vulners.com/prion/PRION:CVE-2024-20981\n    \tPRION:CVE-2024-20971\t3.3\thttps://vulners.com/prion/PRION:CVE-2024-20971\n    \tPRION:CVE-2024-20965\t3.3\thttps://vulners.com/prion/PRION:CVE-2024-20965'}}, 5040: {'state': 'open', 'reason': 'syn-ack', 'name': '', 'product': '', 'version': '', 'extrainfo': '', 'conf': '', 'cpe': ''}, 5432: {'state': 'open', 'reason': 'syn-ack', 'name': 'postgresql', 'product': '', 'version': '', 'extrainfo': '', 'conf': '3', 'cpe': ''}, 15100: {'state': 'open', 'reason': 'syn-ack', 'name': 'unknown', 'product': '', 'version': '', 'extrainfo': '', 'conf': '3', 'cpe': '', 'script': {'fingerprint-strings': '\n  DNSStatusRequestTCP: \n    mQ"t\n  GenericLines, NULL: \n    U.k(-R\n    1dE,\n  HTTPOptions: \n    XZnl\n    QWm)\n    yJ?~\n  RTSPRequest: \n    %:#t'}}, 15101: {'state': 'open', 'reason': 'syn-ack', 'name': 'unknown', 'product': '', 'version': '', 'extrainfo': '', 'conf': '3', 'cpe': '', 'script': {'fingerprint-strings': "\n  GenericLines, NULL: \n    nb-z\n    '{V@i\n    \\x9d`\n    /sCN\n    54(v\n    =onD\n    -#'B\n    \\xcbP\n    E-2Y\n    \\x88\n    QlCn\n    KCDa\n    -q7>"}}, 28252: {'state': 'open', 'reason': 'syn-ack', 'name': '', 'product': '', 'version': '', 'extrainfo': '', 'conf': '', 'cpe': ''}, 33060: {'state': 'open', 'reason': 'syn-ack', 'name': 'mysqlx', 'product': '', 'version': '', 'extrainfo': '', 'conf': '3', 'cpe': '', 'script': {'fingerprint-strings': '\n  DNSStatusRequestTCP, LDAPSearchReq, NotesRPC, SSLSessionReq, TLSSessionReq, X11Probe, afp: \n    Invalid message"\n    HY000\n  LDAPBindReq: \n    *Parse error unserializing protobuf message"\n    HY000\n  oracle-tns: \n    Invalid message-frame."\n    HY000'}}, 45769: {'state': 'open', 'reason': 'syn-ack', 'name': '', 'product': '', 'version': '', 'extrainfo': '', 'conf': '', 'cpe': ''}, 49664: {'state': 'open', 'reason': 'syn-ack', 'name': 'msrpc', 'product': 'Microsoft Windows RPC', 'version': '', 'extrainfo': '', 'conf': '10', 'cpe': 'cpe:/o:microsoft:windows'}, 49665: {'state': 'open', 'reason': 'syn-ack', 'name': 'msrpc', 'product': 'Microsoft Windows RPC', 'version': '', 'extrainfo': '', 'conf': '10', 'cpe': 'cpe:/o:microsoft:windows'}, 49666: {'state': 'open', 'reason': 'syn-ack', 'name': 'msrpc', 'product': 'Microsoft Windows RPC', 'version': '', 'extrainfo': '', 'conf': '10', 'cpe': 'cpe:/o:microsoft:windows'}, 49667: {'state': 'open', 'reason': 'syn-ack', 'name': 'msrpc', 'product': 'Microsoft Windows RPC', 'version': '', 'extrainfo': '', 'conf': '10', 'cpe': 'cpe:/o:microsoft:windows'}, 49668: {'state': 'open', 'reason': 'syn-ack', 'name': 'msrpc', 'product': 'Microsoft Windows RPC', 'version': '', 'extrainfo': '', 'conf': '10', 'cpe': 'cpe:/o:microsoft:windows'}, 49669: {'state': 'open', 'reason': 'syn-ack', 'name': 'msrpc', 'product': 'Microsoft Windows RPC', 'version': '', 'extrainfo': '', 'conf': '10', 'cpe': 'cpe:/o:microsoft:windows'}}, 'hostscript': [{'id': 'smb-vuln-ms10-054', 'output': 'false'}, {'id': 'smb-vuln-ms10-061', 'output': 'Could not negotiate a connection:SMB: Failed to receive bytes: ERROR'}, {'id': 'samba-vuln-cve-2012-1182', 'output': 'Could not negotiate a connection:SMB: Failed to receive bytes: ERROR'}], 'portused': [{'state': 'open', 'proto': 'tcp', 'portid': '135'}, {'state': 'closed', 'proto': 'tcp', 'portid': '1'}, {'state': 'closed', 'proto': 'udp', 'portid': '41050'}], 'osmatch': [{'name': 'Microsoft Windows 10 1607', 'accuracy': '100', 'line': '69748', 'osclass': [{'type': 'general purpose', 'vendor': 'Microsoft', 'osfamily': 'Windows', 'osgen': '10', 'accuracy': '100', 'cpe': ['cpe:/o:microsoft:windows_10:1607']}]}]}}}
         return script.run_script(**scriptArgs)
@@ -155,16 +184,16 @@ class GuiRunner:
                     values[script + "_" + input["id"]] = self.dpg.get_value(script + "_" + input["id"])
                 elif input["type"] == "file":
                     values[script + "_" + input["id"]] = self.dpg.get_value(script + "_" + input["id"])
+                elif input["type"] == "output":
+                    values[script + "_" + input["id"]] = self.dpg.get_value(script + "_" + input["id"])
 
         print(values)
 
         return values
     
     def request_file(self, for_tag):
-        print(self.dpg.get_value(for_tag))
 
         def callback(s, a):
-            print(a['file_path_name'])
             self.dpg.set_value(for_tag, a['file_path_name'])
 
         with self.dpg.file_dialog(callback=callback, width=400, height=400, show=True, directory_selector=False, file_count=1, modal=True, label="Choose file"):
