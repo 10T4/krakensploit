@@ -1,5 +1,7 @@
 #KRAKENSPLOIT
-<img src="https://github.com/10T4/krakensploit/blob/main/addons/krak%26logo.png" width="700" height="700">
+<div style="text-align: center;">
+    <img src="https://github.com/10T4/krakensploit/blob/main/addons/krak%26logo.png" width="200" height="200">
+</div>
 
 ---
 
