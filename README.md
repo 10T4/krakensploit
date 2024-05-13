@@ -1,7 +1,7 @@
 # KrakenSploit
 
-<div style="display: flex; justify-content: center; align-items: center; height: 200px;">
-    <img src="https://github.com/10T4/krakensploit/blob/main/addons/krak%26logo.png" width="200" height="200">
+<div>
+    <img src="https://github.com/10T4/krakensploit/blob/main/addons/krak%26logo.png" width="700" height="700">
 </div>
 
 ---
