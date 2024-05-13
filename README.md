@@ -7,7 +7,7 @@
 
 ## Introduction
 
-Multitool Pentest is a versatile tool designed to simplify and streamline penetration testing by combining several popular security tools into a single, user-friendly interface. Whether you're a professional pentester or a security enthusiast, this tool provides a comprehensive range of features to scan, discover, and exploit vulnerabilities in your networks and web applications.
+Krakentool is a versatile tool designed to simplify and streamline penetration testing by combining several popular security tools into a single, user-friendly interface. Whether you're a professional pentester or a security enthusiast, this tool provides a comprehensive range of features to scan, discover, and exploit vulnerabilities in your networks and web applications.
 
 ---
 
@@ -18,8 +18,6 @@ Multitool Pentest is a versatile tool designed to simplify and streamline penetr
 - **Other Tools**: Easy integration of other popular security tools.
 - **Intuitive User Interface**: User-friendly and easy-to-use interface, ideal for beginners and experts alike.
 - **CLI and GUI Modes**: Supports both Command Line Interface (CLI) and Graphical User Interface (GUI) modes.
-- **Detailed Reports**: Generation of comprehensive reports to document test results.
-
 ---
 
 ## Installation
