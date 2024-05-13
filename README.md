@@ -77,23 +77,4 @@ python3 cli.py nmap --ip_address="IP" scan_vuln
 python multitool_pentest.py -*
 ```
 
----
 
-## Contribution
-
-Contributions are welcome! If you have ideas for improvement, bug fixes, or features to add, please open an issue or submit a pull request.
-
-
----
-
-## Contact
-
-For any questions or concerns, feel free to contact me at [your-email@example.com](mailto:your-email@example.com).
-
----
-
-Feel free to customize this README according to your project and preferences, adding screenshots, additional details about features, etc.
-
----
-
-Feel free to customize this README according to your project and preferences, adding screenshots, additional details about features, etc.
