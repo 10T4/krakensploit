@@ -1,4 +1,4 @@
-# KrakenSploit
+![Screenshot from 2024-05-13 23-09-47](https://github.com/10T4/krakensploit/assets/148342080/f5aedd35-f803-43d0-b200-549073395d48)# KrakenSploit
 
 <div>
     <img src="https://github.com/10T4/krakensploit/blob/main/addons/krak%26logo.png" width="700" height="700">
@@ -71,10 +71,8 @@ sudo python3 gui.py
 python3 cli.py nmap --ip_address="IP" scan_vuln
 ```
 
-### Example 2: Web Site Analysis with Dirb
+### Example 2: Network Scan on GUI
 
-```bash
-python multitool_pentest.py -*
-```
+
 
 
