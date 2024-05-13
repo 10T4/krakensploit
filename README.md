@@ -1,4 +1,4 @@
-# krakentool
+# KrakenSploit
 
 <div style="text-align: center;">
     <img src="https://github.com/10T4/krakensploit/blob/main/addons/krak%26logo.png" width="500" height="500">
@@ -7,7 +7,7 @@
 
 ## Introduction
 
-Krakentool is a versatile tool designed to simplify and streamline penetration testing by combining several popular security tools into a single, user-friendly interface. Whether you're a professional pentester or a security enthusiast, this tool provides a comprehensive range of features to scan, discover, and exploit vulnerabilities in your networks and web applications.
+KrakenSploit is a versatile tool designed to simplify and streamline penetration testing by combining several popular security tools into a single, user-friendly interface. Whether you're a professional pentester or a security enthusiast, this tool provides a comprehensive range of features to scan, discover, and exploit vulnerabilities in your networks and web applications.
 
 ---
 
@@ -25,13 +25,13 @@ Krakentool is a versatile tool designed to simplify and streamline penetration t
 1. Clone this repository to your local machine:
 
 ```bash
-git clone ADD REPO
+git clone https://github.com/10T4/krakensploit.git
 ```
 
 2. Navigate to the project directory:
 
 ```bash
-cd ADD NAME
+cd krakensploit
 ```
 
 3. Install the required dependencies:
@@ -67,7 +67,7 @@ sudo python3 gui.py
 ### Example 1: Network Scan with Nmap
 
 ```bash
-python3 cli.py nmap --ipaddress="IP" scan_vuln
+python3 cli.py nmap --ip_address="IP" scan_vuln
 ```
 
 ### Example 2: Web Site Analysis with Dirb
