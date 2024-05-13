@@ -1,15 +1,4 @@
 # krakentool
-projet tool
-
-
-
-## Developpement
-Test python script : `PYTHONPATH=$PYTHONPATH:$PWD python scripts/thescript.py`
-Sure, here's the README in English:
-
----
-
-# Multitool Pentest
 
 <div style="text-align: center;">
     <img src="https://github.com/10T4/krakensploit/blob/main/addons/krak%26logo.png" width="500" height="500">
