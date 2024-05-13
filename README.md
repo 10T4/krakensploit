@@ -11,7 +11,9 @@ Sure, here's the README in English:
 
 # Multitool Pentest
 
-<img src="https://github.com/10T4/krakensploit/blob/main/addons/krak%26logo.png" width="200" height="200">
+<div style="text-align: center;">
+    <img src="https://github.com/10T4/krakensploit/blob/main/addons/krak%26logo.png" width="800" height="800">
+</div>
 ---
 
 ## Introduction
