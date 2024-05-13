@@ -71,5 +71,5 @@ python3 cli.py nmap --ip_address="IP" scan_vuln
 ### Example 2: Network Scan on GUI
 
 
-<img src="https://github.com/10T4/krakensploit/blob/main/addons/krakensploit.png" width="700" height="700">
+<img src="https://github.com/10T4/krakensploit/blob/main/addons/krakensploit.png">
 
