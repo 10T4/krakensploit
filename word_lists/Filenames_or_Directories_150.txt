@@ -15,6 +15,7 @@ beers
 beeblebrox
 bee
 robots.txt
+xss.html
 beckman
 bebop
 beaufortnet

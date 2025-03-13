@@ -3,3 +3,5 @@ db_passwd
 DB_PASSWORD
 PASSWD
 DEFAULT_PASSWD
+username
+password

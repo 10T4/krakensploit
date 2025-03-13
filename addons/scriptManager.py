@@ -1,7 +1,10 @@
-from scripts import netdiscovery, dirbbuster, credfinder
+from scripts import netdiscovery, dirbbuster, credfinder, xssfinder, arpspoof, hashcrack
 
 scripts = {
     "nmap": netdiscovery,
     "dirb": dirbbuster,
-    "credential": credfinder
+    "credential": credfinder,
+    "xssfinder": xssfinder,
+    "arpspoof": arpspoof,
+    "hashcrack": hashcrack
 }
